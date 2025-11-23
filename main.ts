@@ -4,51 +4,56 @@ namespace SpriteKind {
     export const FortyFiveSlopeL = SpriteKind.create()
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (mySprite.vy < 6 && mySprite.vy > -1) {
-        mySprite.vy += -150
+    if (Sonic.vy < 6 && Sonic.vy > -1) {
+        Sonic.vy += -150
     }
 })
-let mySprite: Sprite = null
+let Direction = 0
+let Sonic: Sprite = null
 scene.setBackgroundImage(assets.image`ABG`)
-mySprite = sprites.create(assets.image`SonicIdleR`, SpriteKind.Player)
-transformSprites.rotateSprite(mySprite, 0)
+Sonic = sprites.create(assets.image`SonicIdleR`, SpriteKind.Player)
+transformSprites.rotateSprite(Sonic, 0)
 let mySprite2 = sprites.create(assets.image`SlopeUpRight`, SpriteKind.FortyFiveSlopeR)
 let mySprite3 = sprites.create(assets.image`SlopeUpLeft`, SpriteKind.FortyFiveSlopeL)
 mySprite2.setPosition(60, 71)
-mySprite3.setPosition(120, 71)
-scene.cameraFollowSprite(mySprite)
+mySprite3.setPosition(104, 71)
+scene.cameraFollowSprite(Sonic)
 scroller.scrollBackgroundWithCamera(scroller.CameraScrollMode.BothDirections)
-mySprite.setPosition(18, 60)
+Sonic.setPosition(18, 60)
+music.play(music.createSong(assets.song`mySong`), music.PlaybackMode.LoopingInBackground)
 game.onUpdate(function () {
-    mySprite.vy += 5
-    if (mySprite.x < 0) {
-        mySprite.x = 0
-        mySprite.vx = 0
+    Sonic.vy += 5
+    if (Sonic.x < 0) {
+        Sonic.x = 0
+        Sonic.vx = 0
     }
-    if (mySprite.x > 250) {
-        mySprite.x = 250
-        mySprite.vx = 0
+    if (Sonic.x > 250) {
+        Sonic.x = 250
+        Sonic.vx = 0
     }
-    if (mySprite.y > 69) {
-        mySprite.y = 69
-        mySprite.vy = 0
+    if (Sonic.y > 69) {
+        Sonic.y = 69
+        Sonic.vy = 0
     }
     if (controller.right.isPressed()) {
-        mySprite.vx += 2
+        Direction = 1
+        Sonic.vx += 2
     } else if (controller.left.isPressed()) {
-        mySprite.vx += -2
+        Direction = -1
+        Sonic.vx += -2
     } else {
-        mySprite.vx += mySprite.vx * -0.15
+        Sonic.vx += Sonic.vx * -0.15
     }
-    if (mySprite.overlapsWith(mySprite2)) {
-        transformSprites.rotateSprite(mySprite, -45)
-        mySprite.y += -1
-        mySprite.vy = 1
-    } else if (mySprite.overlapsWith(mySprite3)) {
-        transformSprites.rotateSprite(mySprite, 45)
-        mySprite.y += -1
-        mySprite.vy = 1
-    } else {
-        transformSprites.rotateSprite(mySprite, 0)
+    if (Direction == 1) {
+        Sonic.setImage(assets.image`SonicIdleR`)
+    } else if (Direction == -1) {
+        Sonic.setImage(assets.image`SonicIdleL`)
+    }
+    if (Sonic.overlapsWith(mySprite2)) {
+        Sonic.y += -2
+        Sonic.vy = 0
+    } else if (Sonic.overlapsWith(mySprite3)) {
+        Sonic.y += -2
+        Sonic.vy = 0
     }
 })
